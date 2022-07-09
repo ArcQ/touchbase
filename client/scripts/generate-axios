@@ -1,0 +1,5 @@
+cd ../backend
+rm swagger.json
+DJANGO_SETTINGS_MODULE=backend.settings.local pipenv run python manage.py generate_swagger swagger.json
+cd -
+node ./scripts/codegen.js

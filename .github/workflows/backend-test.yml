@@ -1,0 +1,60 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python application
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    # Common setup
+    - uses: actions/cache@v2
+      with:
+        path: ~/.local/share/virtualenvs
+        key: ${{ runner.os }}-python-${{ steps.setup-python.outputs.python-version }}-pipenv-${{ hashFiles('Pipfile.lock') }}
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      id: setup-python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install pip and friends
+      run: python -m pip install --upgrade pipenv wheel pip
+    - name: Install dependencies
+      run: pipenv install --deploy --dev
+    # Workflow
+    - name: Check syntax
+      # Stop the build if there are Python syntax errors or undefined names
+      run: pipenv run python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+    - name: Run tests
+      run: pipenv run test
+      env:
+        ETH_KEY: 0x93a40a9b191f1ceb22e4e8d13f510ebdab1ccc1623bb52f81685fbfea3d50b51
+        DJANGO_SECRET: mn+@xb7kyvec%)0z$yzs^_ycgjcees3*7fhex8$_5&u@yb%&l
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    # Common setup
+    - uses: actions/cache@v2
+      with:
+        path: ~/.local/share/virtualenvs
+        key: ${{ runner.os }}-python-${{ steps.setup-python.outputs.python-version }}-pipenv-${{ hashFiles('Pipfile.lock') }}
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      id: setup-python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install pip and friends
+      run: python -m pip install --upgrade pipenv wheel pip
+    - name: Install dependencies
+      run: pipenv install --deploy --dev
+    # Workflow
+    - name: Run lint
+      run: pipenv run lint

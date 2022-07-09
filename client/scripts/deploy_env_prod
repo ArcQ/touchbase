@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+GOOGLE_PROJECT=nfdstarterproj-prod
+REGION=us-east4
+IMAGE_NAME=ndfstarter-v2-nextjs
+CLOUD_RUN_NAME=ndfstarter-v2-nextjs

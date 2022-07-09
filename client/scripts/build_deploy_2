@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+MODE=$1 # function or hosting or firestore
+ENV=$2 # dev stg prod
+
+if [[ "$ENV" = "stg" ]]
+then
+  gcloud config set project $GOOGLE_PROJECT
+  firebase use nfdstarterproj
+elif [[ "$ENV" = "prod" ]]
+then
+  gcloud config set project $GOOGLE_PROJECT
+  firebase use nfdstarterproj-prod
+fi
+
+if [[ "$MODE" = "hosting" ]]
+then
+  echo deploying nextjs app to $ENV
+  cd next-patch
+  yarn build:$ENV
+  yarn export
+  cd -
+  if [[ "$ENV" = "prod" ]]
+  then
+    firebase deploy --only hosting
+  else
+    firebase hosting:channel:deploy preview
+  fi
+fi

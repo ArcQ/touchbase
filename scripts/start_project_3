@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [[ "$ENV" = "prod" ]]
+then
+  source ./backend/scripts/deploy_env_prod
+else
+  # stg env
+  ENV="stg"
+  source ./backend/scripts/deploy_env
+  echo $ENV-$GOOGLE_PROJECT
+  firebase init storage --project $ENV-$GOOGLE_PROJECT
+fi
+
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  google-chrome https://console.firebase.google.com/u/0/project/$ENV-$GOOGLE_PROJECT/authentication
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  open https://console.firebase.google.com/u/0/project/$ENV-$GOOGLE_PROJECT/authentication
+fi

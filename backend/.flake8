@@ -1,0 +1,33 @@
+[flake8]
+exclude =
+    .git,
+    .github,
+    .pytest_cache,
+    __pycache__,
+    static,
+    website_react,
+    *abi.py,
+    *abis.py
+# C901: Function is too complex -- too hard to validate
+# E501: Line too long -- don't really care right now, maybe later
+# E722: Do not use bare except, specify exception instead -- fix this later
+# W503: Line break occurred before a binary operator -- not a bad thing
+# F811: Redefinition of unused name from line n -- this is expected for test fixtures
+#   TODO: Can this rule just be run more specifically, avoiding test fixtures?
+
+# These ones are ignored for now because half the code is commented out,
+# but it seems maybe we shouldn't just delete it all quite yet.
+# E265: Block comment should start with '# '
+# F401: Module imported but unused
+# F841: Local variable name is assigned to but never used
+ignore =
+    C901,
+    E265,
+    E501,
+    E722,
+    W503,
+    F401,
+    F811,
+    F841
+per-file-ignores =
+    parallel_web/settings/*:F403,F405

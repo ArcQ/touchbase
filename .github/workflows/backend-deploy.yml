@@ -1,0 +1,41 @@
+# name: Deploy dev environment
+
+# on:
+#   workflow_dispatch:
+#   push:
+#     branches: [ 'main' ]
+
+# jobs:
+#   deploy:
+#     permissions:
+#       contents: 'read'
+#       id-token: 'write'
+
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v2
+#       # FIXME: waiting on a PAT with access to `website_react` to put in github secrets
+#       # with:
+#       #   submodules: recursive
+#       #   token: ${{ secrets.ACCESS_TOKEN }}
+#     - uses: google-github-actions/setup-gcloud@master
+#       with:
+#         project_id: parallel-dev-332718
+#     - id: google-auth
+#       name: Authenticate to Google Cloud
+#       uses: google-github-actions/auth@v0
+#       with:
+#         token_format: access_token
+#         workload_identity_provider: projects/91328099442/locations/global/workloadIdentityPools/gh-actions-pool/providers/gh-actions-provider
+#         service_account: gh-actions-runner@parallel-dev-332718.iam.gserviceaccount.com
+#     - id: google-auth-docker
+#       name: Configure container registry
+#       run: gcloud auth configure-docker
+#     - name: Install gcloud beta
+#       run: gcloud components install beta
+#     - name: Build and deploy django cloudrun
+#       env:
+#         CREDENTIALS_FILE_PATH: "${{ steps.google-auth.outputs.credentials_file_path }}"
+#         ACCESS_TOKEN: "${{ steps.google-auth.outputs.access_token }}"
+#       run: |
+#         ./build_deploy.sh api dev

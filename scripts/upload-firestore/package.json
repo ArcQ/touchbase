@@ -1,0 +1,16 @@
+{
+  "name": "upload-firestore",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "bulksplash": "^2.0.2",
+    "dotenv": "^11.0.0",
+    "firebase-admin": "^10.0.1",
+    "sharp": "^0.29.3",
+    "uuid-v4": "^0.1.0"
+  },
+  "scripts": {
+    "splash": "bulksplash"
+  }
+}

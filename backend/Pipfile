@@ -1,0 +1,43 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django-cors-headers = "==3.7.0"
+djangorestframework = "==3.12.2"
+djangorestframework-simplejwt = "==4.6.0"
+urllib3 = "*"
+uvicorn = "*"
+pillow = "8.4"
+django-extensions = "3.1"
+web3 = "5.25"
+drf-yasg = "*"
+Django = "~=3.2"
+psycopg2-binary = "*"
+pytz = "*"
+django-redis = "5.1"
+django-storages = {extras = [ "google",], version = "1.12"}
+django-waffle = "2.2"
+python-decouple = "*"
+qrcode = "*"
+firebase-admin = "*"
+djangorestframework-camel-case = "*"
+django-filter = "*"
+username = "*"
+python-dotenv = "*"
+many = "*"
+
+[dev-packages]
+mccabe = "==0.6.1"
+drf-generators = "*"
+django-seed = "*"
+flake8 = "4.0"
+pytest = "6.2"
+pytest-django = "4.5"
+google-cloud-secret-manager="2.8.0"
+wheel = "*"
+django-livereload-server = "*"
+
+[requires]
+python_version = "3.9"

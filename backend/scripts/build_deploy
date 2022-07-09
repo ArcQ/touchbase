@@ -1,0 +1,45 @@
+#!/bin/bash
+
+MODE=$1
+ENV=$2
+echo $ENV
+
+if [[ "$ENV" = "prod" ]]
+then
+  source ./scripts/deploy_env_prod
+else
+  # stg env
+  source ./scripts/deploy_env
+fi
+
+
+timestamp() {
+  date +"%Y-%m-%d_%H-%M-%S"
+}
+
+TIMESTAMP=$(timestamp)
+
+# get the fresh requirements
+pipenv lock -r > requirements.txt
+
+# build the new image
+gcloud config set project $GOOGLE_PROJECT
+gcloud config set builds/use_kaniko True
+
+DJANGO_SETTINGS_MODULE=backend.settings.$ENV pipenv run python manage.py migrate
+
+echo deploying $ENV
+
+pipenv run python manage.py collectstatic --settings=backend.settings.$ENV --noinput
+
+docker build --platform linux/amd64 -f Dockerfile -t gcr.io/$GOOGLE_PROJECT/$IMAGE_NAME .
+docker push gcr.io/$GOOGLE_PROJECT/$IMAGE_NAME
+
+gcloud beta run deploy $CLOUD_RUN_NAME --image gcr.io/$GOOGLE_PROJECT/$IMAGE_NAME:latest --platform managed \
+--min-instances 1 \
+--cpu 1 \
+--update-env-vars "$(sed 'H;1h;$!d;x;y/\n/,/' .env.$ENV)" \
+--update-env-vars ENV_FILE=.env.$ENV \
+--update-secrets DB_PW_${ENV}="ndfstarter${ENV}user2_pw":latest \
+--memory=1024M --region $REGION \
+--add-cloudsql-instances $GOOGLE_PROJECT:$REGION:ndfstarter-db

@@ -1,0 +1,240 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+scalar DateTime
+
+type DeleteIdeaMutation {
+  ok: Boolean
+}
+
+type DeleteLabMutation {
+  ok: Boolean
+}
+
+type ErrorType {
+  field: String!
+  messages: [String!]!
+}
+
+input IdeaMutationInput {
+  id: String
+  createdById: String
+  labId: String
+  title: String!
+  desc: String!
+  notes: String
+  clientMutationId: String
+}
+
+type IdeaMutationPayload {
+  id: String
+  createdBy: UserNode
+  lab: LabNode
+  createdAt: DateTime
+  updatedAt: DateTime
+  title: String
+  desc: String
+  notes: String
+  errors: [ErrorType]
+  labId: ID
+  clientMutationId: String
+}
+
+type IdeaNode implements Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  title: String!
+  desc: String!
+  notes: String!
+  createdBy: UserNode
+  lab: LabNode!
+}
+
+type IdeaNodeConnection {
+  pageInfo: PageInfo!
+  edges: [IdeaNodeEdge]!
+}
+
+type IdeaNodeEdge {
+  node: IdeaNode
+  cursor: String!
+}
+
+input LabJoinMutationInput {
+  id: String
+  createdById: String
+  handledById: String
+  labId: String
+  status: String
+  handledBy: String
+  clientMutationId: String
+}
+
+type LabJoinMutationPayload {
+  id: String
+  createdBy: UserNode
+  lab: LabNode
+  createdAt: DateTime
+  updatedAt: DateTime
+  status: String
+  handledBy: String
+  errors: [ErrorType]
+  labId: ID
+  clientMutationId: String
+}
+
+type LabJoinNode implements Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  createdBy: UserNode!
+  handledBy: UserNode
+  lab: LabNode!
+  status: String!
+}
+
+type LabJoinNodeConnection {
+  pageInfo: PageInfo!
+  edges: [LabJoinNodeEdge]!
+}
+
+type LabJoinNodeEdge {
+  node: LabJoinNode
+  cursor: String!
+}
+
+type LabMemberNode implements Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  role: String!
+  user: UserNode!
+  lab: LabNode!
+  isAdmin: Boolean
+}
+
+type LabMemberNodeConnection {
+  pageInfo: PageInfo!
+  edges: [LabMemberNodeEdge]!
+}
+
+type LabMemberNodeEdge {
+  node: LabMemberNode
+  cursor: String!
+}
+
+input LabMutationInput {
+  id: String
+  createdById: String
+  name: String!
+  imageUrl: String
+  chatId: String!
+  clientMutationId: String
+}
+
+type LabMutationPayload {
+  id: String
+  createdBy: UserNode
+  createdAt: DateTime
+  updatedAt: DateTime
+  name: String
+  imageUrl: String
+  chatId: String
+  code: String
+  errors: [ErrorType]
+  clientMutationId: String
+}
+
+type LabNode implements Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  createdBy: UserNode
+  imageUrl: String!
+  chatId: String!
+  code: String!
+  labmemberSet(offset: Int, before: String, after: String, first: Int, last: Int, lab_Id: UUID): LabMemberNodeConnection!
+  ideaSet(offset: Int, before: String, after: String, first: Int, last: Int, title: String, title_Icontains: String, desc: String, desc_Icontains: String, notes: String, notes_Icontains: String, lab_Id: UUID): IdeaNodeConnection!
+  labjoinSet(offset: Int, before: String, after: String, first: Int, last: Int, lab_Id: UUID): LabJoinNodeConnection!
+}
+
+type LabNodeConnection {
+  pageInfo: PageInfo!
+  edges: [LabNodeEdge]!
+}
+
+type LabNodeEdge {
+  node: LabNode
+  cursor: String!
+}
+
+type Mutation {
+  lab(input: LabMutationInput!): LabMutationPayload
+  deleteLab(id: ID): DeleteLabMutation
+  idea(input: IdeaMutationInput!): IdeaMutationPayload
+  deleteIdea(id: ID): DeleteIdeaMutation
+  labJoin(input: LabJoinMutationInput!): LabJoinMutationPayload
+}
+
+interface Node {
+  id: ID!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Query {
+  lab(id: UUID): LabNode
+  myLabs(offset: Int, before: String, after: String, first: Int, last: Int, name: String, name_Icontains: String, name_Istartswith: String, code: String): LabNodeConnection
+  myUser(id: UUID): UserNode
+  allUsers(offset: Int, before: String, after: String, first: Int, last: Int, username: String, username_Icontains: String, username_Istartswith: String, authKey: String): UserNodeConnection
+  idea(id: UUID): IdeaNode
+  myIdeas(offset: Int, before: String, after: String, first: Int, last: Int, title: String, title_Icontains: String, desc: String, desc_Icontains: String, notes: String, notes_Icontains: String, lab_Id: UUID): IdeaNodeConnection
+  labJoin(id: UUID): LabJoinNode
+  myLabJoins(offset: Int, before: String, after: String, first: Int, last: Int, lab_Id: UUID): LabJoinNodeConnection
+  labMember(id: UUID): LabMemberNode
+  myLabMembers(offset: Int, before: String, after: String, first: Int, last: Int, lab_Id: UUID): LabMemberNodeConnection
+}
+
+scalar UUID
+
+type UserNode implements Node {
+  password: String!
+  lastLogin: DateTime
+  isSuperuser: Boolean!
+  isStaff: Boolean!
+  dateJoined: DateTime!
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  username: String!
+  firstName: String!
+  lastName: String!
+  authKey: String!
+  imageUrl: String!
+  email: String!
+  isActive: Boolean!
+  labSet(offset: Int, before: String, after: String, first: Int, last: Int, name: String, name_Icontains: String, name_Istartswith: String, code: String): LabNodeConnection!
+  labmemberSet(offset: Int, before: String, after: String, first: Int, last: Int, lab_Id: UUID): LabMemberNodeConnection!
+  ideaSet(offset: Int, before: String, after: String, first: Int, last: Int, title: String, title_Icontains: String, desc: String, desc_Icontains: String, notes: String, notes_Icontains: String, lab_Id: UUID): IdeaNodeConnection!
+  labjoin: LabJoinNode
+  labJoinAccepted(offset: Int, before: String, after: String, first: Int, last: Int, lab_Id: UUID): LabJoinNodeConnection!
+}
+
+type UserNodeConnection {
+  pageInfo: PageInfo!
+  edges: [UserNodeEdge]!
+}
+
+type UserNodeEdge {
+  node: UserNode
+  cursor: String!
+}

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+GOOGLE_PROJECT=nfdstarterproj
+REGION=us-east4
+IMAGE_NAME=ndfstarter-django-v2
+DB=ndfstarter-db
+CLOUD_RUN_NAME=stg-ndfstarter-backend-django-v2

@@ -1,0 +1,35 @@
+#!/bin/bash
+
+if [[ "$ENV" = "prod" ]]
+then
+  source ./scripts/deploy_env_prod
+else
+  # stg env
+  source ./scripts/deploy_env
+fi
+
+timestamp() {
+  date +"%Y-%m-%d_%H-%M-%S"
+}
+
+TIMESTAMP=$(timestamp)
+
+# build the new image
+gcloud config set project $GOOGLE_PROJECT
+
+echo deploying $ENV $GOOGLE_PROJECT
+
+# gcloud builds submit --substitutions=_ENVIRONMENT="$ENV",_IMAGE_NAME=$IMAGE_NAME,SHORT_SHA="$(git rev-parse --short HEAD)"  --config=scripts/cloudbuild.yaml
+yarn build:$ENV
+docker build --platform linux/amd64 -f DockerfileFast -t gcr.io/$GOOGLE_PROJECT/$IMAGE_NAME:latest .
+docker push gcr.io/$GOOGLE_PROJECT/$IMAGE_NAME:latest
+
+gcloud beta run deploy $CLOUD_RUN_NAME --image gcr.io/$GOOGLE_PROJECT/$IMAGE_NAME:latest --platform managed \
+--min-instances 1 \
+--cpu 1 \
+--update-env-vars "$(sed 'H;1h;$!d;x;y/\n/,/' .env.$ENV)" \
+--memory=512M \
+--region $REGION \
+--allow-unauthenticated
+
+gcloud run services update-traffic $CLOUD_RUN_NAME --to-latest --region $REGION

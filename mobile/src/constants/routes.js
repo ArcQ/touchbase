@@ -1,0 +1,16 @@
+export const LANDING = 'Landing';
+export const AMPLIFY_AUTH = 'Amplify';
+export const CHAT_ACTIONS_ROUTE = 'ChatActions';
+export const HOME_ROUTE = 'Home';
+export const NOTIFICATIONS_ROUTE = 'Notifications';
+export const CREATE_IDEA_ROUTE = 'CreateIdea';
+export const IDEA_DETAIL_ROUTE = 'IdeaDetail';
+export const CHAT_ROUTE = 'Chat';
+export const HOME_BOTTOM_NAVIGATOR_ROUTE = 'HomeBottom';
+export const PROFILE_ROUTE = 'Profile';
+export const CREATE_LAB_ROUTE = 'CreateLab';
+export const EDIT_LAB_ROUTE = 'EditLab';
+export const LAB_DETAIL_ROUTE = 'LabDetail';
+export const JOIN_LAB_ROUTE = 'JoinLab';
+export const MAIN_IDEAS_LIST_ROUTE = 'MainIdeasListScreen';
+export const INVITE_TO_LAB_ROUTE = 'InviteToLabScreen';

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [[ "$ENV" = "prod" ]]
+then
+  source ./backend/scripts/deploy_env_prod
+else
+  # stg env
+  ENV="stg"
+  source ./backend/scripts/deploy_env
+  echo $GOOGLE_PROJECT
+fi
+
+gcloud projects create $GOOGLE_PROJECT --enable-cloud-apis
+gcloud config set project $GOOGLE_PROJECT
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  google-chrome https://console.cloud.google.com/iam-admin/iam?project=$GOOGLE_PROJECT
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  open https://console.cloud.google.com/iam-admin/iam?project=$GOOGLE_PROJECT
+fi
+# more coming should set up sql cloud run etc.
+gcloud services enable sql-component.googleapis.com run.googleapis.com
