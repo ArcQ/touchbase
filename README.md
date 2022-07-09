@@ -38,3 +38,4 @@ Open localhost:3000 on a webbrowser
 To set up sentry:
 Set up a project and then for nextjs:
 https://docs.sentry.io/platforms/javascript/guides/nextjs/
+# touchbase
